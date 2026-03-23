@@ -1,18 +1,17 @@
 const express = require("express");
 const cors = require("cors");
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Configure OpenAI with the API key from Render environment variables
-const configuration = new Configuration({
+// Configure OpenAI using environment variable directly
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-const openai = new OpenAIApi(configuration);
 
-// Basic health check
+// Health check
 app.get("/", (req, res) => res.send("FIILTHY API RUNNING"));
 
 // AI-powered lead generation
@@ -39,7 +38,6 @@ app.post("/generate-leads", async (req, res) => {
       max_tokens: 400
     });
 
-    // Parse AI output safely
     let leads = [];
     try {
       leads = JSON.parse(response.choices[0].message.content);
@@ -54,6 +52,5 @@ app.post("/generate-leads", async (req, res) => {
   }
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
