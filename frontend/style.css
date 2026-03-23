@@ -1,49 +1,60 @@
 :root {
-  --gold: #d4af37;
+  --neon-green: #00ff99;
+  --neon-gold: #ffd700;
   --dark-black: #000000;
   --dark-gray: #111111;
-  --green: #00ff00;
+  --glow: #00ffee;
 }
 
 body {
   background-color: var(--dark-black);
-  color: var(--gold);
+  color: var(--neon-gold);
   font-family: 'Courier New', monospace;
   padding: 20px;
   margin: 0;
+  background-image: radial-gradient(circle at 50% 50%, #001100, #000000);
+  overflow-x: hidden;
 }
 
 h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
+  font-size: 2.8em;
   text-align: center;
-  text-shadow: 0 0 8px var(--gold);
+  text-shadow: 0 0 15px var(--neon-gold), 0 0 30px var(--neon-green);
+  margin-bottom: 30px;
 }
 
 input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 2px solid var(--gold);
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid var(--neon-gold);
   width: 60%;
   margin-right: 10px;
   color: var(--dark-black);
   font-weight: bold;
+  box-shadow: 0 0 20px var(--neon-green), 0 0 40px var(--neon-gold);
+  transition: 0.3s all ease;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 35px var(--neon-green), 0 0 70px var(--neon-gold);
 }
 
 button {
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
   border: none;
-  background-color: var(--gold);
+  background: linear-gradient(45deg, var(--neon-green), var(--neon-gold));
   color: var(--dark-black);
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 0 10px var(--gold);
-  transition: transform 0.1s ease;
+  box-shadow: 0 0 25px var(--neon-green), 0 0 50px var(--neon-gold);
+  transition: 0.3s all ease;
 }
 
 button:hover {
-  transform: scale(1.05);
+  transform: scale(1.1) rotateZ(-2deg);
+  box-shadow: 0 0 50px var(--neon-green), 0 0 100px var(--neon-gold);
 }
 
 button:disabled {
@@ -55,31 +66,14 @@ button:disabled {
   margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
+  gap: 20px;
+  perspective: 1000px;
 }
 
 .lead-card {
-  border: 2px solid var(--gold);
+  border: 2px solid var(--neon-green);
   background-color: var(--dark-gray);
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px var(--gold);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.lead-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 25px var(--gold);
-}
-
-.lead-card h2 {
-  margin-top: 0;
-  font-size: 1.2em;
-  color: var(--gold);
-}
-
-.lead-card p {
-  margin: 5px 0;
-  color: var(--gold);
-  font-size: 0.95em;
-}
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px var(--neon-green), 0 0 50px var(--neon-gold);
+  transition
