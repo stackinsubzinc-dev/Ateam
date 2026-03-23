@@ -5,7 +5,7 @@ export default function App() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "https://YOUR-RENDER-URL.onrender.com/generate-leads";
+  const API_URL = "https://fiilthyapi.onrender.com/generate-leads";
 
   const generateLeads = async () => {
     if (!niche) return alert("Enter a niche");
