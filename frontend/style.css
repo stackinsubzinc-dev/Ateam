@@ -1,1 +1,48 @@
 
+body {
+  background-color: black;
+  color: #00ff00; /* bright green text */
+  font-family: monospace;
+  padding: 20px;
+  margin: 0;
+}
+
+input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #00ff00;
+  width: 60%;
+  margin-right: 10px;
+  color: black;
+}
+
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #00ff00;
+  color: black;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lead-card {
+  border: 1px solid #00ff00;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: #111; /* slightly darker card */
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#leads {
+  margin-top: 20px;
+}
