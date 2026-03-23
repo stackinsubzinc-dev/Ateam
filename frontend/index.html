@@ -1,14 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>FIILTHY</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIILTHY Vault</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>FIILTHY</h1>
-  <input id="niche" placeholder="Enter niche" />
-  <button onclick="generate()">Generate Leads</button>
+  <div class="vault">
+    <h1>💰 FIILTHY Vault</h1>
+    <p>Enter your niche and unlock hot leads:</p>
 
-  <pre id="output"></pre>
+    <div class="input-group">
+      <input type="text" id="nicheInput" placeholder="Enter your niche"/>
+      <button onclick="generateLeads()">Generate Leads</button>
+    </div>
+
+    <div id="leadsContainer" class="leads"></div>
+  </div>
 
   <script src="app.js"></script>
 </body>
