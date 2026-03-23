@@ -6,15 +6,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Configure OpenAI using environment variable directly
+// Use OpenAI class directly, no Configuration
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Health check
-app.get("/", (req, res) => res.send("FIILTHY API RUNNING"));
+// Health check route
+app.get("/", (req, res) => {
+  res.send("FIILTHY API RUNNING");
+});
 
-// AI-powered lead generation
+// Generate AI leads
 app.post("/generate-leads", async (req, res) => {
   try {
     const { niche } = req.body;
@@ -23,11 +25,9 @@ app.post("/generate-leads", async (req, res) => {
     const prompt = `
       Generate 5 business leads for the niche "${niche}".
       Include:
-        - Name
-        - Pain point
-        - Lead score (1-10)
-        - Urgency level
-        - Suggested outreach message
+        - name
+        - pain
+        - score (1-10)
       Return as a valid JSON array.
     `;
 
@@ -52,5 +52,6 @@ app.post("/generate-leads", async (req, res) => {
   }
 });
 
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
