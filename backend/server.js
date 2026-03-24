@@ -22,7 +22,7 @@ app.post("/api/analyze", async (req, res) => {
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1-mini"
+      model: "gpt-4.1-mini",
       messages: [
         { role: "system", content: "Analyze the website URL. Return JSON: {niche, offer, weaknesses: [], outreach_message: ''}" },
         { role: "user", content: `Analyze: ${business_url}` }
