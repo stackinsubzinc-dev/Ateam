@@ -1,48 +1,45 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import OpenAI from "openai";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
 const app = express();
 
-// Middleware
 app.use(express.json());
-
-// Enable CORS for your frontend
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL, // set this to your Vercel frontend URL
-    methods: ["GET", "POST"],
-    credentials: true,
-  })
-);
-
-// Example route
-app.get("/api/health", (req, res) => {
-  res.json({ status: "Backend is working" });
-});
-
-// Example endpoint calling OpenAI
-import OpenAI from "openai";
+app.use(cors({ origin: "*" }));
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-app.post("/api/generate", async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt) return res.status(400).json({ error: "No prompt provided" });
+app.post("/api/analyze", async (req, res) => {
+  const { business_url } = req.body;
+  if (!business_url) return res.status(400).json({ error: "Missing URL" });
 
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+      messages: [
+        { role: "system", content: "Analyze the website URL. Return JSON: {niche, offer, weaknesses: [], outreach_message: ''}" },
+        { role: "user", content: `Analyze: ${business_url}` }
+      ],
+      response_format: { type: "json_object" }
     });
-    res.json({ result: response.choices[0].message.content });
+
+    const aiResults = JSON.parse(response.choices[0].message.content);
+
+    await supabase.from('analyses').insert([{ 
+      business_url: business_url, 
+      results: aiResults 
+    }]);
+
+    res.json(aiResults);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "OpenAI request failed" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Use PORT from Render
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get("/", (req, res) => res.send("API Live"));
+app.listen(process.env.PORT || 10000);
+```
