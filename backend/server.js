@@ -15,7 +15,10 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 
 app.post("/api/analyze", async (req, res) => {
   const { business_url } = req.body;
-  if (!business_url) return res.status(400).json({ error: "Missing URL" });
+  
+  if (!business_url) {
+    return res.status(400).json({ error: "Missing URL" });
+  }
 
   try {
     const response = await openai.chat.completions.create({
@@ -29,17 +32,26 @@ app.post("/api/analyze", async (req, res) => {
 
     const aiResults = JSON.parse(response.choices[0].message.content);
 
-    await supabase.from('analyses').insert([{ 
+    const { error } = await supabase.from('analyses').insert([{ 
       business_url: business_url, 
       results: aiResults 
     }]);
 
+    if (error) throw error;
+
     res.json(aiResults);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get("/", (req, res) => res.send("API Live"));
-app.listen(process.env.PORT || 10000);
-```
+app.get("/", (req, res) => {
+  res.send("API Live");
+});
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```"Server running on port 10000".
