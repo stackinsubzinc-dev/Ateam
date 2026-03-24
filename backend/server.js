@@ -8,52 +8,60 @@ import { createClient } from "@supabase/supabase-js";
 dotenv.config();
 
 const app = express();
-app.use(express.json());
-app.use(cors({ origin: "*" }));
+const PORT = process.env.PORT || 5000;
 
-// Initialize OpenAI
+// Middleware
+app.use(cors({ origin: "*" }));
+app.use(express.json());
+
+// OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Initialize Supabase
+// Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Basic test route
+// Test route
 app.get("/", (req, res) => {
-  res.send("Server is running!");
+  res.send("Fiilthy backend is running 🚀");
 });
 
-// Example route for OpenAI chat completion
-app.post("/chat", async (req, res) => {
+// Example API route
+app.post("/generate", async (req, res) => {
   try {
-    const { userMessage } = req.body;
+    const { prompt } = req.body;
 
-    if (!userMessage) {
-      return res.status(400).json({ error: "No userMessage provided" });
-    }
+    if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: userMessage }
-      ]
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
     });
 
-    const message = completion.choices[0].message.content;
-    res.json({ reply: message });
+    res.json({ result: completion.choices[0].message.content });
   } catch (error) {
-    console.error("OpenAI error:", error);
-    res.status(500).json({ error: "Failed to get completion" });
+    console.error("OpenAI Error:", error);
+    res.status(500).json({ error: "Failed to generate text" });
   }
 });
 
-// Start the server
-const PORT = process.env.PORT || 3000;
+// Example Supabase route
+app.get("/users", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("users").select("*");
+    if (error) throw error;
+    res.json({ users: data });
+  } catch (error) {
+    console.error("Supabase Error:", error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
+
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
