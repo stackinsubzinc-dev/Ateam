@@ -9,7 +9,7 @@ async function generateLeads() {
   leadsContainer.innerHTML = "<p>Generating leads...</p>";
 
   try {
-    const res = await fetch("https://YOUR_RENDER_BACKEND_URL/generate-leads", {
+    const res = await fetch("https://https://fiilthyapi.onrender.com/generate-leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ niche })
