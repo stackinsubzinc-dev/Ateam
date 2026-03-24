@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Use OpenAI class directly, no Configuration
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.FIILTHY_API_KEY
 });
 
 // Health check route
