@@ -1,57 +1,48 @@
-const express = require("express");
-const cors = require("cors");
-const OpenAI = require("openai");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
-app.use(cors());
+
+// Middleware
 app.use(express.json());
 
-// Use OpenAI class directly, no Configuration
-const openai = new OpenAI({
-  apiKey: process.env.FIILTHY_API_KEY
+// Enable CORS for your frontend
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL, // set this to your Vercel frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+
+// Example route
+app.get("/api/health", (req, res) => {
+  res.json({ status: "Backend is working" });
 });
 
-// Health check route
-app.get("/", (req, res) => {
-  res.send("FIILTHY API RUNNING");
-});
+// Example endpoint calling OpenAI
+import OpenAI from "openai";
 
-// Generate AI leads
-app.post("/generate-leads", async (req, res) => {
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+app.post("/api/generate", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: "No prompt provided" });
+
   try {
-    const { niche } = req.body;
-    if (!niche) return res.status(400).json({ error: "Niche required" });
-
-    const prompt = `
-      Generate 5 business leads for the niche "${niche}".
-      Include:
-        - name
-        - pain
-        - score (1-10)
-      Return as a valid JSON array.
-    `;
-
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-      max_tokens: 400
     });
-
-    let leads = [];
-    try {
-      leads = JSON.parse(response.choices[0].message.content);
-    } catch {
-      leads = [{ name: "Error parsing AI response", pain: "", score: 0 }];
-    }
-
-    res.json({ success: true, leads });
+    res.json({ result: response.choices[0].message.content });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "OpenAI request failed" });
   }
 });
 
-// Start server
+// Use PORT from Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
